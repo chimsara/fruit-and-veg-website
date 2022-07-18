@@ -14,16 +14,14 @@ function Seasonal() {
         const options = {
             method: 'GET',
             headers: {
-                'X-RapidAPI-Key': '916d4b8f04msh2f31021b30c0a06p116f31jsnea4544e1a87a',
+                'X-RapidAPI-Key': process.env.REACT_APP_API_KEY ,
                 'X-RapidAPI-Host': 'fit-life-food.p.rapidapi.com'
             }
         };
-        
-        fetch('https://fit-life-food.p.rapidapi.com/seasons/summer', options)
-            .then(response => response.json())
-            .then(response => console.log(response))
-            .catch(err => console.error(err));
-     
+
+        const api = await fetch('https://fit-life-food.p.rapidapi.com/seasons/summer', options)
+        const data = await api.json();
+        console.log(data);
     } 
 
     return (
