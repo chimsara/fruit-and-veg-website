@@ -1,8 +1,9 @@
 /* This is the seasonal section of the website*/
 
-import { useEffect } from "react";
+import { useEffect , useState } from "react";
 
 function Seasonal() {
+    const [seasonal, setSeasonal] = useState([]);
 
     /*Get the Seasonal items when page loads*/
     useEffect( () => {
@@ -19,13 +20,32 @@ function Seasonal() {
             }
         };
 
-        const api = await fetch('https://fit-life-food.p.rapidapi.com/seasons/summer', options)
+        const api = await fetch('https://fit-life-food.p.rapidapi.com/seasons/summer?number=3', options)
         const data = await api.json();
-        console.log(data);
-    } 
+        
+        var dataArray = [];
+        for (var x = 0; x < 10; x++){
+            dataArray.push({
+                "name": data[x],
+                "id" : x});
+        }
+        setSeasonal(dataArray);
+        console.log(seasonal);
+    };
 
     return (
-        <div>Seasonal</div>
+        <div>
+            <h2>Seasonal</h2>
+            <div>
+                {seasonal.map((food) => {
+                    return(
+                        <div key={food.id}>
+                            <p>{food.name}</p>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
      );
 }
 

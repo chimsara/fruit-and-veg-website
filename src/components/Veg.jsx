@@ -1,6 +1,8 @@
 function Veg() {
     return ( 
-        <div>Vegetables</div>
+        <div>
+            <h2>Vegetables</h2>
+        </div>
      );
 }
 
