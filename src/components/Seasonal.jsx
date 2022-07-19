@@ -1,9 +1,10 @@
 /* This is the seasonal section of the website*/
-
 import { useEffect , useState } from "react";
+import styled from "styled-components";
 
 function Seasonal() {
     const [seasonal, setSeasonal] = useState([]);
+    const [foodImage, setFoodImage] = useState([]);
 
     /*Get the Seasonal items when page loads*/
     useEffect( () => {
@@ -12,6 +13,7 @@ function Seasonal() {
 
     /*Fetch the seasonal */
     const getSeasonal = async () => {
+
         const options = {
             method: 'GET',
             headers: {
@@ -20,11 +22,18 @@ function Seasonal() {
             }
         };
 
-        const api = await fetch('https://fit-life-food.p.rapidapi.com/seasons/summer?number=3', options)
+        function createImage(word) {
+            const imageApi = fetch (`https://api.unsplash.com/photos/random?client_id=${process.env.REACT_APP_API_IMAGE_KEY}&query=${word}`)
+            const imageData = imageApi.json();
+            setFoodImage(imageData);
+            console.log(imageData);
+        }
+
+        const api = await fetch('https://fit-life-food.p.rapidapi.com/seasons/summer', options)
         const data = await api.json();
         
         var dataArray = [];
-        for (var x = 0; x < 10; x++){
+        for (var x = 0; x < 3; x++){
             dataArray.push({
                 "name": data[x],
                 "id" : x});
@@ -35,18 +44,31 @@ function Seasonal() {
 
     return (
         <div>
-            <h2>Seasonal</h2>
-            <div>
+            <Wrapper>
+                <h2>Seasonal</h2>
                 {seasonal.map((food) => {
                     return(
-                        <div key={food.id}>
-                            <p>{food.name}</p>
-                        </div>
+                        <Card>
+                            <div key={food.id}>
+                                <p>{food.name}</p>
+                                createImage({food.name});
+                                <img src={foodImage.urls.regular}/>
+                            </div>
+                        </Card>
                     );
                 })}
-            </div>
+            </Wrapper>
         </div>
      );
 }
+
+const Wrapper = styled.div`
+margin: 4rem 0rem;
+`;
+
+const Card = styled.div`
+min-height: 25rem;
+border-radius: 2rem;
+`;
 
 export default Seasonal;
