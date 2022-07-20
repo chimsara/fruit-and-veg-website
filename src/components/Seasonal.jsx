@@ -1,17 +1,18 @@
 /* This is the seasonal section of the website*/
 import { useEffect , useState } from "react";
-import styled from "styled-components";
+import { Splide, SplideSlide } from '@splidejs/react-splide';
+import '@splidejs/react-splide/css';
+import "../styles/Seasonal.css"
 
 function Seasonal() {
     const [seasonal, setSeasonal] = useState([]);
-    const [foodImage, setFoodImage] = useState([]);
 
     /*Get the Seasonal items when page loads*/
     useEffect( () => {
         getSeasonal();
     }, []);
 
-    /*Fetch the seasonal */
+    //Fetch the seasonal 
     const getSeasonal = async () => {
 
         const options = {
@@ -22,18 +23,11 @@ function Seasonal() {
             }
         };
 
-        function createImage(word) {
-            const imageApi = fetch (`https://api.unsplash.com/photos/random?client_id=${process.env.REACT_APP_API_IMAGE_KEY}&query=${word}`)
-            const imageData = imageApi.json();
-            setFoodImage(imageData);
-            console.log(imageData);
-        }
-
         const api = await fetch('https://fit-life-food.p.rapidapi.com/seasons/summer', options)
         const data = await api.json();
         
         var dataArray = [];
-        for (var x = 0; x < 3; x++){
+        for (var x = 0; x < 10; x++){
             dataArray.push({
                 "name": data[x],
                 "id" : x});
@@ -41,34 +35,36 @@ function Seasonal() {
         setSeasonal(dataArray);
         console.log(seasonal);
     };
+    
+    //Fetch the pictures 
+    const getSeasonalPictures = async () => {
+        const apiPic = await fetch(`https://spoonacular.com/cdn/ingredients_250x250/apple.jpg?apiKey=${process.env.REACT_APP_API_KEY_PICTURES}`);
+        const dataPic = await apiPic.json();
+        console.log(dataPic);
+    };
+
 
     return (
-        <div>
-            <Wrapper>
-                <h2>Seasonal</h2>
-                {seasonal.map((food) => {
-                    return(
-                        <Card>
-                            <div key={food.id}>
-                                <p>{food.name}</p>
-                                createImage({food.name});
-                                <img src={foodImage.urls.regular}/>
-                            </div>
-                        </Card>
-                    );
-                })}
-            </Wrapper>
+        <div class="seasonal">
+            <h2 id="seasonal__title">Seasonal</h2>
+            <div class="seasonal__list">
+                <Splide options={
+                {perPage: 5, arrows:true, pagination:false, drag:"free", gap:"5px",}}>
+                    {seasonal.map((food) => {
+                        return(
+                            <SplideSlide>
+                                <div key={food.id} class="seasonal__card">
+                                    <p id="seasonal__name">{food.name}</p>
+                                    <img src={"https://spoonacular.com/cdn/ingredients_250x250/" + food.name.toLowerCase() + ".jpg"} 
+                                    alt={food.name} id="seasonal__image"/>
+                                </div>
+                            </SplideSlide> 
+                        );
+                    })}
+                </Splide>
+            </div>                
         </div>
      );
 }
-
-const Wrapper = styled.div`
-margin: 4rem 0rem;
-`;
-
-const Card = styled.div`
-min-height: 25rem;
-border-radius: 2rem;
-`;
 
 export default Seasonal;

@@ -3,7 +3,7 @@ import Pages from "./pages/Pages";
 function App() {
   return (
     <div className="App">
-      <h1>Fruit and Vegtable Search</h1>
+      <h1 align="center">Fruit and Vegtable Search</h1>
       <Pages />
     </div>
   );
